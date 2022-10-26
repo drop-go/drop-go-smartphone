@@ -1,9 +1,25 @@
+import 'package:drop_go_smartphone/router/app_router.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
 
-class SplashScreen extends StatelessWidget {
+class SplashScreen extends ConsumerStatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);
+
+  @override
+  ConsumerState<SplashScreen> createState() => _SplashScreenState();
+}
+
+class _SplashScreenState extends ConsumerState<SplashScreen> {
+  @override
+  void initState() {
+    Future.delayed(const Duration(seconds: 3), () {
+      // ignore: avoid_print
+      ref.read(routerProvider).push('/map');
+    });
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -14,12 +30,15 @@ class SplashScreen extends StatelessWidget {
           child: Column(
             children: [
               const Spacer(),
-              Text(
-                'GO',
-                style: GoogleFonts.notoSans(
-                  fontSize: 100,
-                  fontWeight: FontWeight.w700,
-                  color: const Color(0xFF073375),
+              Padding(
+                padding: const EdgeInsets.only(top: 100),
+                child: Text(
+                  'GO',
+                  style: GoogleFonts.notoSans(
+                    fontSize: 100,
+                    fontWeight: FontWeight.w700,
+                    color: const Color(0xFF073375),
+                  ),
                 ),
               ),
               const Spacer(),

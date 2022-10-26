@@ -1,6 +1,11 @@
 import 'package:drop_go_smartphone/drop_go.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 void main() {
-  runApp(const DropGo());
+  runApp(
+    const ProviderScope(
+      child: DropGo(),
+    ),
+  );
 }
