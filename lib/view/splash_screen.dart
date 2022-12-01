@@ -16,7 +16,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
   void initState() {
     Future.delayed(const Duration(seconds: 3), () {
       // ignore: avoid_print
-      ref.read(routerProvider).push('/map');
+      ref.read(routerProvider).push('/info');
     });
     super.initState();
   }

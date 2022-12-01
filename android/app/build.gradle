@@ -25,6 +25,21 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
 
+// ----------------------- Add start ------------------------//
+// 環境変数を格納する配列
+def dartEnvironmentVariables = [
+        MAP_API_KEY: ''
+]
+// --dart-defineの読み込み
+dartEnvironmentVariables =
+        dartEnvironmentVariables + project.property('dart-defines')
+                .split(',')
+                .collectEntries { entry ->
+                    def pair = String(entry.decodeBase64(), 'UTF-8').split('=')
+                    [(pair.first()): pair.last()]
+                }
+// ----------------------- Add end ------------------------//
+
 android {
     compileSdkVersion flutter.compileSdkVersion
     ndkVersion flutter.ndkVersion
@@ -47,10 +62,11 @@ android {
         applicationId "io.github.yamayama250.drop_go_smartphone"
         // You can update the following values to match your application needs.
         // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-build-configuration.
-        minSdkVersion flutter.minSdkVersion
+        minSdkVersion 20
         targetSdkVersion flutter.targetSdkVersion
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
+        manifestPlaceholders = [MAP_API_KEY: dartEnvironmentVariables.MAP_API_KEY]
     }
 
     buildTypes {
