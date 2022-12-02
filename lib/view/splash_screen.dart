@@ -1,4 +1,4 @@
-import 'package:drop_go_smartphone/router/app_router.dart';
+import 'package:drop_go_smartphone/view/info_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -15,8 +15,10 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
   @override
   void initState() {
     Future.delayed(const Duration(seconds: 3), () {
-      // ignore: avoid_print
-      ref.read(routerProvider).push('/info');
+      Navigator.of(context).push(
+        InfoScreen.route(),
+      );
+      // ref.read(routerProvider).push('/info');
     });
     super.initState();
   }

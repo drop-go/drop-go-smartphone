@@ -44,6 +44,8 @@ dependencies:
   geolocator: ^9.0.2
   flutter_hooks: ^0.18.5+1
   colorful_safe_area: ^0.3.0
+  modal_bottom_sheet: ^2.1.2
+  sheet: ^0.0.4+1
 
 dev_dependencies:
   flutter_test:
