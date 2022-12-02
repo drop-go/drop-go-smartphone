@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lottie/lottie.dart';
 
+import 'package:drop_go_smartphone/config/constants.dart' as constants;
+
 class InfoScreen extends ConsumerWidget {
   const InfoScreen({super.key});
 
@@ -26,13 +28,13 @@ class InfoScreen extends ConsumerWidget {
               child: Column(
                 children: [
                   const Text(
-                    "GPSを活用し、お得な情報を",
+                    constants.overviewMsg,
                     style: TextStyle(
                       fontSize: 20,
                     ),
                   ),
                   const Text(
-                    "  GET！",
+                    constants.getText,
                     style: TextStyle(
                       fontSize: 40,
                       fontWeight: FontWeight.bold,
@@ -62,7 +64,7 @@ class InfoScreen extends ConsumerWidget {
                           ),
                         ),
                         child: const Text(
-                          "OK",
+                          constants.okText,
                           style: TextStyle(
                             fontSize: 24,
                           ),

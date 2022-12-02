@@ -2,6 +2,8 @@ import 'package:drop_go_smartphone/view/map_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'package:drop_go_smartphone/config/constants.dart' as constants;
+
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
 
@@ -23,7 +25,7 @@ class HomeScreen extends ConsumerWidget {
                 const Padding(
                   padding: EdgeInsets.symmetric(vertical: 12),
                   child: Text(
-                    "おすすめのイベント情報",
+                    constants.eventInfo,
                     style: TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,

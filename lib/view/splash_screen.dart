@@ -4,6 +4,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
 
+import 'package:drop_go_smartphone/config/constants.dart' as constants;
+
 class SplashScreen extends ConsumerStatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);
 
@@ -35,7 +37,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
               Padding(
                 padding: const EdgeInsets.only(top: 100),
                 child: Text(
-                  'GO',
+                  constants.okText,
                   style: GoogleFonts.notoSans(
                     fontSize: 100,
                     fontWeight: FontWeight.w700,
