@@ -1,11 +1,10 @@
 import 'package:drop_go_smartphone/view/home_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lottie/lottie.dart';
 
 import 'package:drop_go_smartphone/config/constants.dart' as constants;
 
-class InfoScreen extends ConsumerWidget {
+class InfoScreen extends StatelessWidget {
   const InfoScreen({super.key});
 
   static Route<dynamic> route() {
@@ -15,7 +14,7 @@ class InfoScreen extends ConsumerWidget {
   }
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async => false,
       child: Scaffold(

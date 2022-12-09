@@ -1,14 +1,13 @@
 import 'dart:async';
 
+import 'package:animations/animations.dart';
 import 'package:drop_go_smartphone/view/notification_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
-class MapScreen extends ConsumerWidget {
+class MapScreen extends StatelessWidget {
   const MapScreen({Key? key}) : super(key: key);
 
   static Route<dynamic> route() {
@@ -18,7 +17,7 @@ class MapScreen extends ConsumerWidget {
   }
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async => false,
       child: Scaffold(
@@ -53,15 +52,28 @@ class MapScreen extends ConsumerWidget {
                 padding: EdgeInsets.only(
                   top: MediaQuery.of(context).padding.top,
                 ),
-                child: FloatingActionButton(
-                  heroTag: "notification",
-                  backgroundColor: Colors.white,
-                  elevation: 0,
-                  onPressed: () => _showCupertinoModalBottomSheet(context),
-                  child: const Icon(
-                    Icons.notifications,
-                    color: Colors.black,
+                child: OpenContainer(
+                  closedShape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(100),
                   ),
+                  closedElevation: 0,
+                  transitionType: ContainerTransitionType.fadeThrough,
+                  transitionDuration: const Duration(milliseconds: 500),
+                  closedBuilder: (context, action) {
+                    return FloatingActionButton(
+                      heroTag: "notification",
+                      backgroundColor: Colors.white,
+                      elevation: 0,
+                      onPressed: action,
+                      child: const Icon(
+                        Icons.notifications,
+                        color: Colors.black,
+                      ),
+                    );
+                  },
+                  openBuilder: (context, action) {
+                    return const NotificationScreen();
+                  },
                 ),
               ),
             ),
@@ -70,14 +82,6 @@ class MapScreen extends ConsumerWidget {
       ),
     );
   }
-}
-
-void _showCupertinoModalBottomSheet(BuildContext context) {
-  showCupertinoModalBottomSheet(
-    topRadius: const Radius.circular(45),
-    context: context,
-    builder: (BuildContext context) => const NotificationScreen(),
-  );
 }
 
 class MapView extends HookWidget {

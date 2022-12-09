@@ -1,19 +1,18 @@
 import 'package:drop_go_smartphone/view/info_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
 
 import 'package:drop_go_smartphone/config/constants.dart' as constants;
 
-class SplashScreen extends ConsumerStatefulWidget {
+class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);
 
   @override
-  ConsumerState<SplashScreen> createState() => _SplashScreenState();
+  State<SplashScreen> createState() => _SplashScreenState();
 }
 
-class _SplashScreenState extends ConsumerState<SplashScreen> {
+class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     Future.delayed(const Duration(seconds: 3), () {
@@ -37,7 +36,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
               Padding(
                 padding: const EdgeInsets.only(top: 100),
                 child: Text(
-                  constants.okText,
+                  constants.goText,
                   style: GoogleFonts.notoSans(
                     fontSize: 100,
                     fontWeight: FontWeight.w700,

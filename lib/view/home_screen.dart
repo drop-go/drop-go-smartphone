@@ -1,8 +1,10 @@
+import 'package:drop_go_smartphone/providers.dart';
+import 'package:drop_go_smartphone/util/unix_time_formatter.dart';
 import 'package:drop_go_smartphone/view/map_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:drop_go_smartphone/config/constants.dart' as constants;
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
@@ -15,6 +17,8 @@ class HomeScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final state = ref.watch(eventViewModelProvider);
+
     return WillPopScope(
       onWillPop: () async => false,
       child: Scaffold(
@@ -34,8 +38,13 @@ class HomeScreen extends ConsumerWidget {
                 ),
                 Expanded(
                   child: ListView.builder(
-                    itemCount: 4,
+                    itemCount: state.eventList.length,
                     itemBuilder: (context, index) {
+                      final startDate =
+                          unixToDate(state.eventList[index].startDate);
+                      final endDate =
+                          unixToDate(state.eventList[index].endDate);
+
                       return Padding(
                         padding: const EdgeInsets.all(16),
                         child: InkWell(
@@ -67,8 +76,8 @@ class HomeScreen extends ConsumerWidget {
                                     borderRadius: const BorderRadius.vertical(
                                       top: Radius.circular(20),
                                     ),
-                                    child: Image.asset(
-                                      "assets/image/nara.jpg",
+                                    child: Image.network(
+                                      state.eventList[index].imageUrl,
                                       fit: BoxFit.cover,
                                     ),
                                   ),
@@ -76,39 +85,40 @@ class HomeScreen extends ConsumerWidget {
                                 Padding(
                                   padding: const EdgeInsets.all(10),
                                   child: Column(
-                                    children: const [
+                                    children: [
                                       SizedBox(
                                         width: double.infinity,
                                         child: Text(
-                                          "奈良県◯◯町",
+                                          state.eventList[index].address,
                                           textAlign: TextAlign.left,
-                                          style: TextStyle(
+                                          style: const TextStyle(
                                             fontSize: 18,
                                           ),
                                         ),
                                       ),
                                       Padding(
-                                        padding:
-                                            EdgeInsets.symmetric(vertical: 8),
+                                        padding: const EdgeInsets.symmetric(
+                                            vertical: 8),
                                         child: Text(
-                                          "君も大仏をゲット！！",
-                                          style: TextStyle(
+                                          state.eventList[index].title,
+                                          style: const TextStyle(
                                             fontSize: 18,
                                             fontWeight: FontWeight.bold,
                                           ),
                                         ),
                                       ),
                                       Padding(
-                                        padding: EdgeInsets.only(
+                                        padding: const EdgeInsets.only(
                                           bottom: 12,
                                         ),
                                         child: Text(
-                                            "奈良県 ◯◯町にある大仏スポットを巡り、 そこでしか体験できない歴史を感じよう!!"),
+                                          state.eventList[index].description,
+                                        ),
                                       ),
                                       SizedBox(
                                         width: double.infinity,
                                         child: Text(
-                                          '◯◯月◯◯日 ~ ◯◯月◯◯日',
+                                          '$startDate ~ $endDate',
                                           textAlign: TextAlign.right,
                                         ),
                                       ),
