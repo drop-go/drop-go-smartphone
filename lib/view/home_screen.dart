@@ -23,6 +23,7 @@ class HomeScreen extends ConsumerWidget {
       onWillPop: () async => false,
       child: Scaffold(
         body: SafeArea(
+          bottom: false,
           child: Center(
             child: Column(
               children: [
@@ -50,7 +51,7 @@ class HomeScreen extends ConsumerWidget {
                         child: InkWell(
                           onTap: () => {
                             Navigator.of(context).push(
-                              MapScreen.route(),
+                              MapScreen.route(state.eventList[index].id),
                             ),
                           },
                           child: Container(
@@ -71,7 +72,7 @@ class HomeScreen extends ConsumerWidget {
                               children: [
                                 SizedBox(
                                   width: double.infinity,
-                                  height: 125,
+                                  height: 135,
                                   child: ClipRRect(
                                     borderRadius: const BorderRadius.vertical(
                                       top: Radius.circular(20),

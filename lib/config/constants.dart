@@ -1,3 +1,6 @@
+// api
+const String baseURL = 'https://public.drop-go-api.xyz';
+
 // common
 const String okText = 'OK';
 const String close = '閉じる';
