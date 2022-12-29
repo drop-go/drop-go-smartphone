@@ -1,7 +1,12 @@
-import 'package:drop_go_smartphone/app.dart';
+// Flutter imports:
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+
+// Package imports:
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+
+// Project imports:
+import 'package:drop_go_smartphone/app.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

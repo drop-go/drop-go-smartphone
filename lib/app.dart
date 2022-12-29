@@ -1,5 +1,8 @@
-import 'package:drop_go_smartphone/view/splash_screen.dart';
+// Flutter imports:
 import 'package:flutter/material.dart';
+
+// Project imports:
+import 'package:drop_go_smartphone/features/introduction/presentation/splash_screen.dart';
 
 class App extends StatelessWidget {
   const App({Key? key}) : super(key: key);
