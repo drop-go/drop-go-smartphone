@@ -7,6 +7,7 @@ import 'package:http/http.dart' as http;
 
 // Project imports:
 import 'package:drop_go_smartphone/constants/constants.dart' as constants;
+import 'package:drop_go_smartphone/features/map/model/file/file_model.dart';
 import 'package:drop_go_smartphone/features/map/model/item_model.dart';
 
 final itemRepositoryProvider =
@@ -14,6 +15,7 @@ final itemRepositoryProvider =
 
 abstract class ItemRepository {
   Future<List<ItemModel>> fetchItems(String id);
+  Future<FileModel> fetchFile(String eventId, String itemId);
 }
 
 class ItemRepositoryImpl implements ItemRepository {
@@ -33,5 +35,13 @@ class ItemRepositoryImpl implements ItemRepository {
     }
 
     return items;
+  }
+
+  @override
+  Future<FileModel> fetchFile(String eventId, String itemId) async {
+    final url =
+        Uri.parse("${constants.baseURL}/event/$eventId/item/$itemId/download");
+    final res = await http.get(url);
+    return FileModel.fromJson(jsonDecode(utf8.decode(res.bodyBytes)));
   }
 }

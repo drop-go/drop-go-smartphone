@@ -21,7 +21,8 @@ FileModel _$FileModelFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$FileModel {
   String get fileName => throw _privateConstructorUsedError;
-  String get extention => throw _privateConstructorUsedError;
+  String get dataURI => throw _privateConstructorUsedError;
+  String get extension => throw _privateConstructorUsedError;
   String get type => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -35,7 +36,7 @@ abstract class $FileModelCopyWith<$Res> {
   factory $FileModelCopyWith(FileModel value, $Res Function(FileModel) then) =
       _$FileModelCopyWithImpl<$Res, FileModel>;
   @useResult
-  $Res call({String fileName, String extention, String type});
+  $Res call({String fileName, String dataURI, String extension, String type});
 }
 
 /// @nodoc
@@ -52,7 +53,8 @@ class _$FileModelCopyWithImpl<$Res, $Val extends FileModel>
   @override
   $Res call({
     Object? fileName = null,
-    Object? extention = null,
+    Object? dataURI = null,
+    Object? extension = null,
     Object? type = null,
   }) {
     return _then(_value.copyWith(
@@ -60,9 +62,13 @@ class _$FileModelCopyWithImpl<$Res, $Val extends FileModel>
           ? _value.fileName
           : fileName // ignore: cast_nullable_to_non_nullable
               as String,
-      extention: null == extention
-          ? _value.extention
-          : extention // ignore: cast_nullable_to_non_nullable
+      dataURI: null == dataURI
+          ? _value.dataURI
+          : dataURI // ignore: cast_nullable_to_non_nullable
+              as String,
+      extension: null == extension
+          ? _value.extension
+          : extension // ignore: cast_nullable_to_non_nullable
               as String,
       type: null == type
           ? _value.type
@@ -79,7 +85,7 @@ abstract class _$$_FileModelCopyWith<$Res> implements $FileModelCopyWith<$Res> {
       __$$_FileModelCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({String fileName, String extention, String type});
+  $Res call({String fileName, String dataURI, String extension, String type});
 }
 
 /// @nodoc
@@ -94,7 +100,8 @@ class __$$_FileModelCopyWithImpl<$Res>
   @override
   $Res call({
     Object? fileName = null,
-    Object? extention = null,
+    Object? dataURI = null,
+    Object? extension = null,
     Object? type = null,
   }) {
     return _then(_$_FileModel(
@@ -102,9 +109,13 @@ class __$$_FileModelCopyWithImpl<$Res>
           ? _value.fileName
           : fileName // ignore: cast_nullable_to_non_nullable
               as String,
-      extention: null == extention
-          ? _value.extention
-          : extention // ignore: cast_nullable_to_non_nullable
+      dataURI: null == dataURI
+          ? _value.dataURI
+          : dataURI // ignore: cast_nullable_to_non_nullable
+              as String,
+      extension: null == extension
+          ? _value.extension
+          : extension // ignore: cast_nullable_to_non_nullable
               as String,
       type: null == type
           ? _value.type
@@ -118,7 +129,10 @@ class __$$_FileModelCopyWithImpl<$Res>
 @JsonSerializable()
 class _$_FileModel with DiagnosticableTreeMixin implements _FileModel {
   const _$_FileModel(
-      {required this.fileName, this.extention = '', this.type = ''});
+      {required this.fileName,
+      this.dataURI = '',
+      this.extension = '',
+      this.type = ''});
 
   factory _$_FileModel.fromJson(Map<String, dynamic> json) =>
       _$$_FileModelFromJson(json);
@@ -127,14 +141,17 @@ class _$_FileModel with DiagnosticableTreeMixin implements _FileModel {
   final String fileName;
   @override
   @JsonKey()
-  final String extention;
+  final String dataURI;
+  @override
+  @JsonKey()
+  final String extension;
   @override
   @JsonKey()
   final String type;
 
   @override
   String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
-    return 'FileModel(fileName: $fileName, extention: $extention, type: $type)';
+    return 'FileModel(fileName: $fileName, dataURI: $dataURI, extension: $extension, type: $type)';
   }
 
   @override
@@ -143,7 +160,8 @@ class _$_FileModel with DiagnosticableTreeMixin implements _FileModel {
     properties
       ..add(DiagnosticsProperty('type', 'FileModel'))
       ..add(DiagnosticsProperty('fileName', fileName))
-      ..add(DiagnosticsProperty('extention', extention))
+      ..add(DiagnosticsProperty('dataURI', dataURI))
+      ..add(DiagnosticsProperty('extension', extension))
       ..add(DiagnosticsProperty('type', type));
   }
 
@@ -154,14 +172,16 @@ class _$_FileModel with DiagnosticableTreeMixin implements _FileModel {
             other is _$_FileModel &&
             (identical(other.fileName, fileName) ||
                 other.fileName == fileName) &&
-            (identical(other.extention, extention) ||
-                other.extention == extention) &&
+            (identical(other.dataURI, dataURI) || other.dataURI == dataURI) &&
+            (identical(other.extension, extension) ||
+                other.extension == extension) &&
             (identical(other.type, type) || other.type == type));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(runtimeType, fileName, extention, type);
+  int get hashCode =>
+      Object.hash(runtimeType, fileName, dataURI, extension, type);
 
   @JsonKey(ignore: true)
   @override
@@ -180,7 +200,8 @@ class _$_FileModel with DiagnosticableTreeMixin implements _FileModel {
 abstract class _FileModel implements FileModel {
   const factory _FileModel(
       {required final String fileName,
-      final String extention,
+      final String dataURI,
+      final String extension,
       final String type}) = _$_FileModel;
 
   factory _FileModel.fromJson(Map<String, dynamic> json) =
@@ -189,7 +210,9 @@ abstract class _FileModel implements FileModel {
   @override
   String get fileName;
   @override
-  String get extention;
+  String get dataURI;
+  @override
+  String get extension;
   @override
   String get type;
   @override

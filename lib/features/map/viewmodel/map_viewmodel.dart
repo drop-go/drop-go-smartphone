@@ -1,11 +1,16 @@
 // Dart imports:
 import 'dart:async';
+import 'dart:convert';
+import 'dart:io';
+import 'dart:typed_data';
 
 // Package imports:
 import 'package:geolocator/geolocator.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:path_provider/path_provider.dart';
 
 // Project imports:
+import 'package:drop_go_smartphone/features/map/model/file/file_model.dart';
 import 'package:drop_go_smartphone/features/map/model/item_model.dart';
 import 'package:drop_go_smartphone/features/map/repository/item_repository.dart';
 import 'package:drop_go_smartphone/features/map/repository/position_repository.dart';
@@ -49,22 +54,17 @@ class MapViewModel extends StateNotifier<MapState> {
   Future<List<ItemModel>> getItems(String id) async {
     final itemRepository = read(itemRepositoryProvider);
     final List<ItemModel> itemList = await itemRepository.fetchItems(id);
-    print('id: $id');
-    print('${itemList[0].latitude}.${itemList[0].longitude}');
     return itemList;
-    // try {
-    //   print(itemList);
+  }
 
-    //   if (!mounted) {
-    //     return;
-    //   }
-    //   state = state.copyWith(itemList: itemList);
-    // } on Exception catch (e) {
-    //   if (!mounted) {
-    //     return;
-    //   }
-    //   state = state.copyWith(errorMessage: e.toString());
-    // }
+  Future<void> downloadItem(String eventId, String itemId) async {
+    final itemRepository = read(itemRepositoryProvider);
+    final FileModel file = await itemRepository.fetchFile(eventId, itemId);
+    final Uint8List bytes = base64Decode(file.dataURI.split(',')[1]);
+    final String dir = (await getApplicationDocumentsDirectory()).path;
+    final File saveFile = File("$dir/${file.fileName}.${file.extension}");
+    await saveFile.writeAsBytes(bytes);
+    print(saveFile.path);
   }
 
   Future<void> _getCurrentLocation() async {

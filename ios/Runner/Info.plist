@@ -6,6 +6,12 @@
     <string>Your location is required for this app</string>
 	<key>MAP_API_KEY</key>
 	<string>$(MAP_API_KEY)</string>
+  <key>MGLMapboxAccessToken</key>
+  <string>pk.eyJ1IjoiZ3VjY2hhbjI4IiwiYSI6ImNsY2N4a2wxczRjcjkzb21uazJjOTlhNjIifQ.Jgb65XrpokHionJ7Y6nVow</string>
+  <key>NSBonjourServices</key>
+  <array>
+    <string>_dartobservatory._tcp.</string>
+  </array>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>

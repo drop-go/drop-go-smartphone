@@ -13,7 +13,8 @@ part 'file_model.g.dart';
 class FileModel with _$FileModel {
   const factory FileModel({
     required String fileName,
-    @Default('') String extention,
+    @Default('') String dataURI,
+    @Default('') String extension,
     @Default('') String type,
   }) = _FileModel;
 
