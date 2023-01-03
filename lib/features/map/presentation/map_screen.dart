@@ -15,6 +15,7 @@ import 'package:mapbox_gl/mapbox_gl.dart';
 import 'package:drop_go_smartphone/features/map/model/item_model.dart';
 import 'package:drop_go_smartphone/features/map/presentation/notification_screen.dart';
 import 'package:drop_go_smartphone/features/providers.dart';
+import 'package:drop_go_smartphone/features/saved_file/presentation/savefile_list_screen.dart';
 import 'package:drop_go_smartphone/main.dart';
 
 final trackingProvider = StateProvider(
@@ -122,7 +123,7 @@ class MapScreen extends StatelessWidget {
                     );
                   },
                   openBuilder: (context, action) {
-                    return const NotificationScreen();
+                    return const SavefileListScreen();
                   },
                 ),
               ),

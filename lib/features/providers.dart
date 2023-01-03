@@ -9,6 +9,8 @@ import 'package:drop_go_smartphone/features/map/state/position_state.dart';
 import 'package:drop_go_smartphone/features/map/viewmodel/item_viewmodel.dart';
 import 'package:drop_go_smartphone/features/map/viewmodel/map_viewmodel.dart';
 import 'package:drop_go_smartphone/features/map/viewmodel/position_viewmodel.dart';
+import 'package:drop_go_smartphone/features/saved_file/state/savefile_state.dart';
+import 'package:drop_go_smartphone/features/saved_file/viewmodel/savefile_view_model.dart';
 
 final eventIdProvider = StateProvider<String>((ref) => '');
 
@@ -30,4 +32,9 @@ final mapViewModelProvider =
 final itemViewModelProvider =
     StateNotifierProvider.autoDispose<ItemViewModel, MapState>(
   (ref) => ItemViewModel(ref.read),
+);
+
+final savefileViewModelProvider =
+    StateNotifierProvider.autoDispose<SavefileViewModel, SavefileState>(
+  (ref) => SavefileViewModel(ref.read),
 );
