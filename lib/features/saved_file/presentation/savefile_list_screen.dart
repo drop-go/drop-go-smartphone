@@ -7,6 +7,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 // Project imports:
 import 'package:drop_go_smartphone/common_widgets/common_loading.dart';
 import 'package:drop_go_smartphone/features/providers.dart';
+import 'package:drop_go_smartphone/utils/date_to_string.dart';
 
 class SavefileListScreen extends ConsumerWidget {
   const SavefileListScreen({super.key});
@@ -112,7 +113,7 @@ class FilePanel extends StatelessWidget {
                             Row(
                               children: [
                                 Text(
-                                  '${file['date']} - ${file['fileSize']}',
+                                  '${dateFormat(file['date'] as DateTime)} - ${file['fileSize']}',
                                   textAlign: TextAlign.left,
                                   style: const TextStyle(
                                     color: Colors.grey,

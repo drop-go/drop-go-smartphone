@@ -4,6 +4,7 @@ import 'dart:math';
 
 // Package imports:
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:mime/mime.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 
@@ -23,12 +24,15 @@ class SavefileRepositoryImpl implements SavefileRepository {
     final dir = Directory(path);
     final files = dir.listSync();
     for (var file in files) {
+      final contentType = lookupMimeType(file.path) ?? '';
       final stat = await file.stat();
       final map = {
         'name': p.basenameWithoutExtension(file.path),
         'extension': p.extension(file.path).split('.')[1],
         'fileSize': _convertSizeText(stat.size),
         'date': stat.modified,
+        'contentType': contentType.split('/')[0],
+        'path': file.path,
       };
       fileMapList.add(map);
     }

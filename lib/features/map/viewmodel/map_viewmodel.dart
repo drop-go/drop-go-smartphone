@@ -64,7 +64,6 @@ class MapViewModel extends StateNotifier<MapState> {
     final String dir = (await getApplicationDocumentsDirectory()).path;
     final File saveFile = File("$dir/${file.fileName}.${file.extension}");
     await saveFile.writeAsBytes(bytes);
-    print(saveFile.path);
   }
 
   Future<void> _getCurrentLocation() async {

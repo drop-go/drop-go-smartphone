@@ -2,8 +2,8 @@
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 // Project imports:
+import 'package:drop_go_smartphone/features/saved_file/model/savefile_state.dart';
 import 'package:drop_go_smartphone/features/saved_file/repository/savefile_repository.dart';
-import 'package:drop_go_smartphone/features/saved_file/state/savefile_state.dart';
 
 class SavefileViewModel extends StateNotifier<SavefileState> {
   SavefileViewModel(this.read) : super(const SavefileState()) {
