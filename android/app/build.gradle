@@ -68,7 +68,7 @@ android {
         targetSdkVersion flutter.targetSdkVersion
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
-        manifestPlaceholders = [MAP_API_KEY: dartEnvironmentVariables.MAP_API_KEY]
+        manifestPlaceholders += [MAP_API_KEY: dartEnvironmentVariables.MAP_API_KEY, MAPBOX_PUBLIC: dartEnvironmentVariables.MAPBOX_PUBLIC]
     }
 
     buildTypes {

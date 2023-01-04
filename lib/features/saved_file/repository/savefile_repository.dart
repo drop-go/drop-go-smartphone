@@ -26,6 +26,12 @@ class SavefileRepositoryImpl implements SavefileRepository {
     for (var file in files) {
       final contentType = lookupMimeType(file.path) ?? '';
       final stat = await file.stat();
+      if (stat.type == FileSystemEntityType.directory) {
+        continue;
+      }
+      if (p.extension(file.path).split('.').length != 2) {
+        continue;
+      }
       final map = {
         'name': p.basenameWithoutExtension(file.path),
         'extension': p.extension(file.path).split('.')[1],
