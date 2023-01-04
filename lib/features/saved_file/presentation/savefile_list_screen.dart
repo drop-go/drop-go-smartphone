@@ -1,7 +1,11 @@
+// Dart imports:
+import 'dart:io';
+
 // Flutter imports:
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:animations/animations.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 // Project imports:
@@ -64,74 +68,180 @@ class FilePanel extends StatelessWidget {
         itemCount: fileList.length,
         itemBuilder: (context, index) {
           final file = fileList[index];
-          return InkWell(
-            onTap: () {},
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Row(
-                children: [
-                  const Icon(
-                    Icons.file_copy,
-                    color: Color(0xFF4069FF),
-                  ),
-                  const SizedBox(width: 16),
-                  Flexible(
-                    child: Container(
-                      decoration: const BoxDecoration(
-                        border: Border(
-                          bottom: BorderSide(
-                            color: Colors.grey,
-                            width: 0.5,
+          return OpenContainer(
+            closedElevation: 0,
+            transitionType: ContainerTransitionType.fadeThrough,
+            transitionDuration: const Duration(milliseconds: 500),
+            closedBuilder: (context, action) {
+              return Container(
+                color: Theme.of(context).scaffoldBackgroundColor,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: Row(
+                    children: [
+                      const Icon(
+                        Icons.file_copy,
+                        color: Color(0xFF4069FF),
+                      ),
+                      const SizedBox(width: 16),
+                      Flexible(
+                        child: Container(
+                          decoration: const BoxDecoration(
+                            border: Border(
+                              bottom: BorderSide(
+                                color: Colors.grey,
+                                width: 0.5,
+                              ),
+                            ),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.only(bottom: 8, top: 5),
+                            child: Column(
+                              children: [
+                                Row(
+                                  children: [
+                                    Flexible(
+                                      child: Text(
+                                        file['name'].toString(),
+                                        textAlign: TextAlign.left,
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: const TextStyle(fontSize: 18),
+                                      ),
+                                    ),
+                                    const SizedBox(width: 10),
+                                    Text(
+                                      "${file['extension']}ファイル",
+                                      style: const TextStyle(
+                                        color: Colors.grey,
+                                        fontSize: 14,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                Row(
+                                  children: [
+                                    Text(
+                                      '${dateFormat(file['date'] as DateTime)} - ${file['fileSize']}',
+                                      textAlign: TextAlign.left,
+                                      style: const TextStyle(
+                                        color: Colors.grey,
+                                        fontSize: 14,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       ),
-                      child: Padding(
-                        padding: const EdgeInsets.only(bottom: 8, top: 5),
-                        child: Column(
-                          children: [
-                            Row(
-                              children: [
-                                Flexible(
-                                  child: Text(
-                                    file['name'].toString(),
-                                    textAlign: TextAlign.left,
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: const TextStyle(fontSize: 18),
-                                  ),
-                                ),
-                                const SizedBox(width: 10),
-                                Text(
-                                  "${file['extension']}ファイル",
-                                  style: const TextStyle(
-                                    color: Colors.grey,
-                                    fontSize: 14,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            Row(
-                              children: [
-                                Text(
-                                  '${dateFormat(file['date'] as DateTime)} - ${file['fileSize']}',
-                                  textAlign: TextAlign.left,
-                                  style: const TextStyle(
-                                    color: Colors.grey,
-                                    fontSize: 14,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
+                    ],
                   ),
-                ],
-              ),
-            ),
+                ),
+              );
+            },
+            openBuilder: (context, action) {
+              switch (file['contentType'].toString()) {
+                case 'image':
+                  return ImagePreview(saveFile: file);
+                default:
+                  return OtherPreview(saveFile: file);
+              }
+            },
           );
         },
+      ),
+    );
+  }
+}
+
+class ImagePreview extends StatelessWidget {
+  const ImagePreview({super.key, required Map<String, Object> saveFile})
+      : file = saveFile;
+
+  final Map<String, Object> file;
+
+  @override
+  Widget build(BuildContext context) {
+    return WillPopScope(
+      onWillPop: () async => false,
+      child: Scaffold(
+        body: Stack(
+          children: [
+            Center(
+              child: Image.file(
+                File(file['path'].toString()),
+                fit: BoxFit.cover,
+              ),
+            ),
+            Positioned(
+              right: 20,
+              top: 20,
+              child: Padding(
+                padding: EdgeInsets.only(
+                  top: MediaQuery.of(context).padding.top,
+                ),
+                child: FloatingActionButton(
+                  heroTag: "close",
+                  backgroundColor: Colors.white.withOpacity(0.5),
+                  elevation: 0,
+                  onPressed: () => Navigator.of(context).pop(),
+                  hoverColor: Colors.transparent,
+                  splashColor: Colors.transparent,
+                  child: const Icon(
+                    Icons.close,
+                    color: Colors.black,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class OtherPreview extends StatelessWidget {
+  const OtherPreview({super.key, required Map<String, Object> saveFile})
+      : file = saveFile;
+
+  final Map<String, Object> file;
+
+  @override
+  Widget build(BuildContext context) {
+    return WillPopScope(
+      onWillPop: () async => false,
+      child: Scaffold(
+        body: Stack(
+          children: [
+            const Center(
+              child: Text('このファイルはプレビュー対象外です'),
+            ),
+            Positioned(
+              right: 20,
+              top: 20,
+              child: Padding(
+                padding: EdgeInsets.only(
+                  top: MediaQuery.of(context).padding.top,
+                ),
+                child: FloatingActionButton(
+                  heroTag: "close",
+                  backgroundColor: Colors.white.withOpacity(0.5),
+                  elevation: 0,
+                  onPressed: () => Navigator.of(context).pop(),
+                  hoverColor: Colors.transparent,
+                  splashColor: Colors.transparent,
+                  child: const Icon(
+                    Icons.close,
+                    color: Colors.black,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
