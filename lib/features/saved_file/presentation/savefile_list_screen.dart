@@ -3,14 +3,18 @@ import 'dart:io';
 
 // Flutter imports:
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 // Package imports:
 import 'package:animations/animations.dart';
+import 'package:flick_video_player/flick_video_player.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:video_player/video_player.dart';
 
 // Project imports:
 import 'package:drop_go_smartphone/common_widgets/common_loading.dart';
 import 'package:drop_go_smartphone/features/providers.dart';
+import 'package:drop_go_smartphone/features/saved_file/presentation/widgets/custom_control.dart';
 import 'package:drop_go_smartphone/utils/date_to_string.dart';
 
 class SavefileListScreen extends ConsumerWidget {
@@ -145,6 +149,8 @@ class FilePanel extends StatelessWidget {
               switch (file['contentType'].toString()) {
                 case 'image':
                   return ImagePreview(saveFile: file);
+                case 'video':
+                  return VideoPreview(saveFile: file);
                 default:
                   return OtherPreview(saveFile: file);
               }
@@ -156,11 +162,31 @@ class FilePanel extends StatelessWidget {
   }
 }
 
-class ImagePreview extends StatelessWidget {
+class ImagePreview extends StatefulWidget {
   const ImagePreview({super.key, required Map<String, Object> saveFile})
       : file = saveFile;
 
   final Map<String, Object> file;
+
+  @override
+  State<ImagePreview> createState() => _ImagePreviewState();
+}
+
+class _ImagePreviewState extends State<ImagePreview> {
+  @override
+  void initState() {
+    super.initState();
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: []);
+  }
+
+  @override
+  void dispose() {
+    SystemChrome.setEnabledSystemUIMode(
+      SystemUiMode.manual,
+      overlays: [SystemUiOverlay.top, SystemUiOverlay.bottom],
+    );
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -171,7 +197,7 @@ class ImagePreview extends StatelessWidget {
           children: [
             Center(
               child: Image.file(
-                File(file['path'].toString()),
+                File(widget.file['path'].toString()),
                 fit: BoxFit.cover,
               ),
             ),
@@ -197,6 +223,91 @@ class ImagePreview extends StatelessWidget {
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class VideoPreview extends StatefulWidget {
+  const VideoPreview({super.key, required Map<String, Object> saveFile})
+      : file = saveFile;
+
+  final Map<String, Object> file;
+
+  @override
+  State<VideoPreview> createState() => _VideoPreviewState();
+}
+
+class _VideoPreviewState extends State<VideoPreview> {
+  late FlickManager _flickManager;
+
+  @override
+  void initState() {
+    super.initState();
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: []);
+    final path = File(widget.file['path'].toString());
+    _flickManager = FlickManager(
+      videoPlayerController: VideoPlayerController.file(path),
+    );
+  }
+
+  @override
+  void dispose() {
+    _flickManager.dispose();
+    SystemChrome.setEnabledSystemUIMode(
+      SystemUiMode.manual,
+      overlays: [SystemUiOverlay.top, SystemUiOverlay.bottom],
+    );
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return WillPopScope(
+      onWillPop: () async => false,
+      child: Container(
+        color: Colors.black87,
+        child: SafeArea(
+          top: false,
+          child: Scaffold(
+            body: Stack(
+              children: [
+                Center(
+                  child: FlickVideoPlayer(
+                    flickManager: _flickManager,
+                    systemUIOverlay: const [],
+                    flickVideoWithControls: const FlickVideoWithControls(
+                      backgroundColor: Colors.black87,
+                      videoFit: BoxFit.fitWidth,
+                      controls: CustomControl(),
+                    ),
+                  ),
+                ),
+                Positioned(
+                  right: 20,
+                  top: 20,
+                  child: Padding(
+                    padding: EdgeInsets.only(
+                      top: MediaQuery.of(context).padding.top,
+                    ),
+                    child: FloatingActionButton(
+                      heroTag: "close",
+                      backgroundColor: Colors.white.withOpacity(0.5),
+                      elevation: 0,
+                      onPressed: () => Navigator.of(context).pop(),
+                      hoverColor: Colors.transparent,
+                      splashColor: Colors.transparent,
+                      child: const Icon(
+                        Icons.close,
+                        color: Colors.black,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
         ),
       ),
     );
