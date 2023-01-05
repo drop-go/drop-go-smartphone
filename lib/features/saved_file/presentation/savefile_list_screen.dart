@@ -1,20 +1,19 @@
 // Dart imports:
-import 'dart:io';
 
 // Flutter imports:
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 // Package imports:
 import 'package:animations/animations.dart';
-import 'package:flick_video_player/flick_video_player.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:video_player/video_player.dart';
 
 // Project imports:
 import 'package:drop_go_smartphone/common_widgets/common_loading.dart';
 import 'package:drop_go_smartphone/features/providers.dart';
-import 'package:drop_go_smartphone/features/saved_file/presentation/widgets/custom_control.dart';
+import 'package:drop_go_smartphone/features/saved_file/presentation/preview_screen/image_preview.dart';
+import 'package:drop_go_smartphone/features/saved_file/presentation/preview_screen/other_preview.dart';
+import 'package:drop_go_smartphone/features/saved_file/presentation/preview_screen/video_preview.dart';
+import 'package:drop_go_smartphone/features/saved_file/presentation/preview_screen/webview_preview.dart';
 import 'package:drop_go_smartphone/utils/date_to_string.dart';
 
 class SavefileListScreen extends ConsumerWidget {
@@ -66,294 +65,133 @@ class FilePanel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
+    return ListView.builder(
       padding: const EdgeInsets.only(top: 16),
-      child: ListView.builder(
-        itemCount: fileList.length,
-        itemBuilder: (context, index) {
-          final file = fileList[index];
-          return OpenContainer(
-            closedElevation: 0,
-            transitionType: ContainerTransitionType.fadeThrough,
-            transitionDuration: const Duration(milliseconds: 500),
-            closedBuilder: (context, action) {
-              return Container(
-                color: Theme.of(context).scaffoldBackgroundColor,
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: Row(
-                    children: [
-                      const Icon(
-                        Icons.file_copy,
-                        color: Color(0xFF4069FF),
-                      ),
-                      const SizedBox(width: 16),
-                      Flexible(
-                        child: Container(
-                          decoration: const BoxDecoration(
-                            border: Border(
-                              bottom: BorderSide(
-                                color: Colors.grey,
-                                width: 0.5,
-                              ),
-                            ),
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.only(bottom: 8, top: 5),
-                            child: Column(
-                              children: [
-                                Row(
-                                  children: [
-                                    Flexible(
-                                      child: Text(
-                                        file['name'].toString(),
-                                        textAlign: TextAlign.left,
-                                        maxLines: 1,
-                                        overflow: TextOverflow.ellipsis,
-                                        style: const TextStyle(fontSize: 18),
-                                      ),
-                                    ),
-                                    const SizedBox(width: 10),
-                                    Text(
-                                      "${file['extension']}ファイル",
-                                      style: const TextStyle(
-                                        color: Colors.grey,
-                                        fontSize: 14,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                Row(
-                                  children: [
-                                    Text(
-                                      '${dateFormat(file['date'] as DateTime)} - ${file['fileSize']}',
-                                      textAlign: TextAlign.left,
-                                      style: const TextStyle(
-                                        color: Colors.grey,
-                                        fontSize: 14,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              );
-            },
-            openBuilder: (context, action) {
-              switch (file['contentType'].toString()) {
-                case 'image':
-                  return ImagePreview(saveFile: file);
-                case 'video':
-                  return VideoPreview(saveFile: file);
-                default:
-                  return OtherPreview(saveFile: file);
-              }
-            },
-          );
-        },
-      ),
-    );
-  }
-}
-
-class ImagePreview extends StatefulWidget {
-  const ImagePreview({super.key, required Map<String, Object> saveFile})
-      : file = saveFile;
-
-  final Map<String, Object> file;
-
-  @override
-  State<ImagePreview> createState() => _ImagePreviewState();
-}
-
-class _ImagePreviewState extends State<ImagePreview> {
-  @override
-  void initState() {
-    super.initState();
-    SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: []);
-  }
-
-  @override
-  void dispose() {
-    SystemChrome.setEnabledSystemUIMode(
-      SystemUiMode.manual,
-      overlays: [SystemUiOverlay.top, SystemUiOverlay.bottom],
-    );
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async => false,
-      child: Scaffold(
-        body: Stack(
-          children: [
-            Center(
-              child: Image.file(
-                File(widget.file['path'].toString()),
-                fit: BoxFit.cover,
-              ),
-            ),
-            Positioned(
-              right: 20,
-              top: 20,
+      itemCount: fileList.length,
+      itemBuilder: (context, index) {
+        final file = fileList[index];
+        return OpenContainer(
+          closedElevation: 0,
+          transitionType: ContainerTransitionType.fadeThrough,
+          transitionDuration: const Duration(milliseconds: 500),
+          closedBuilder: (context, action) {
+            return Container(
+              color: Theme.of(context).scaffoldBackgroundColor,
               child: Padding(
-                padding: EdgeInsets.only(
-                  top: MediaQuery.of(context).padding.top,
-                ),
-                child: FloatingActionButton(
-                  heroTag: "close",
-                  backgroundColor: Colors.white.withOpacity(0.5),
-                  elevation: 0,
-                  onPressed: () => Navigator.of(context).pop(),
-                  hoverColor: Colors.transparent,
-                  splashColor: Colors.transparent,
-                  child: const Icon(
-                    Icons.close,
-                    color: Colors.black,
-                  ),
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Row(
+                  children: [
+                    _ifIcon(file),
+                    const SizedBox(width: 16),
+                    _saveFilePart(file),
+                  ],
                 ),
               ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class VideoPreview extends StatefulWidget {
-  const VideoPreview({super.key, required Map<String, Object> saveFile})
-      : file = saveFile;
-
-  final Map<String, Object> file;
-
-  @override
-  State<VideoPreview> createState() => _VideoPreviewState();
-}
-
-class _VideoPreviewState extends State<VideoPreview> {
-  late FlickManager _flickManager;
-
-  @override
-  void initState() {
-    super.initState();
-    SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: []);
-    final path = File(widget.file['path'].toString());
-    _flickManager = FlickManager(
-      videoPlayerController: VideoPlayerController.file(path),
+            );
+          },
+          openBuilder: (context, action) {
+            switch (file['contentType'].toString()) {
+              case 'image':
+                return ImagePreview(file: file);
+              case 'video':
+                return VideoPreview(file: file);
+              default:
+                if (file['extension'].toString() == 'link') {
+                  return WebviewPreview(
+                    url: file['url'].toString(),
+                    title: file['name'].toString(),
+                  );
+                } else {
+                  return const OtherPreview();
+                }
+            }
+          },
+        );
+      },
     );
   }
 
-  @override
-  void dispose() {
-    _flickManager.dispose();
-    SystemChrome.setEnabledSystemUIMode(
-      SystemUiMode.manual,
-      overlays: [SystemUiOverlay.top, SystemUiOverlay.bottom],
-    );
-    super.dispose();
+  Future<String> _getUrl(String path) async {
+    return '';
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async => false,
+  Widget _saveFilePart(Map<String, Object> file) {
+    return Flexible(
       child: Container(
-        color: Colors.black87,
-        child: SafeArea(
-          top: false,
-          child: Scaffold(
-            body: Stack(
-              children: [
-                Center(
-                  child: FlickVideoPlayer(
-                    flickManager: _flickManager,
-                    systemUIOverlay: const [],
-                    flickVideoWithControls: const FlickVideoWithControls(
-                      backgroundColor: Colors.black87,
-                      videoFit: BoxFit.fitWidth,
-                      controls: CustomControl(),
-                    ),
-                  ),
-                ),
-                Positioned(
-                  right: 20,
-                  top: 20,
-                  child: Padding(
-                    padding: EdgeInsets.only(
-                      top: MediaQuery.of(context).padding.top,
-                    ),
-                    child: FloatingActionButton(
-                      heroTag: "close",
-                      backgroundColor: Colors.white.withOpacity(0.5),
-                      elevation: 0,
-                      onPressed: () => Navigator.of(context).pop(),
-                      hoverColor: Colors.transparent,
-                      splashColor: Colors.transparent,
-                      child: const Icon(
-                        Icons.close,
-                        color: Colors.black,
-                      ),
-                    ),
-                  ),
-                ),
-              ],
+        decoration: const BoxDecoration(
+          border: Border(
+            bottom: BorderSide(
+              color: Colors.grey,
+              width: 0.5,
             ),
+          ),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.only(bottom: 8, top: 5),
+          child: Column(
+            children: [
+              Row(
+                children: [
+                  Flexible(
+                    child: Text(
+                      file['name'].toString(),
+                      textAlign: TextAlign.left,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(fontSize: 18),
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  Text(
+                    "${file['extension']}ファイル",
+                    style: const TextStyle(
+                      color: Colors.grey,
+                      fontSize: 14,
+                    ),
+                  ),
+                ],
+              ),
+              Row(
+                children: [
+                  Text(
+                    '${dateFormat(file['date'] as DateTime)} - ${file['fileSize']}',
+                    textAlign: TextAlign.left,
+                    style: const TextStyle(
+                      color: Colors.grey,
+                      fontSize: 14,
+                    ),
+                  ),
+                ],
+              ),
+            ],
           ),
         ),
       ),
     );
   }
-}
 
-class OtherPreview extends StatelessWidget {
-  const OtherPreview({super.key, required Map<String, Object> saveFile})
-      : file = saveFile;
+  Widget _ifIcon(Map<String, Object> file) {
+    final Map<String, Icon> iconList = {
+      'image': const Icon(Icons.image, color: Color(0xFF4069FF)),
+      'video': const Icon(Icons.video_file, color: Color(0xFF4069FF)),
+      'audio': const Icon(Icons.audio_file, color: Color(0xFF4069FF)),
+    };
+    final contentType = file['contentType'].toString();
 
-  final Map<String, Object> file;
+    if (iconList.containsKey(contentType)) {
+      return iconList[contentType]!;
+    } else {
+      if (file['extension'].toString() == 'link') {
+        return const Icon(
+          Icons.link,
+          color: Color(0xFF4069FF),
+        );
+      }
+    }
 
-  @override
-  Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async => false,
-      child: Scaffold(
-        body: Stack(
-          children: [
-            const Center(
-              child: Text('このファイルはプレビュー対象外です'),
-            ),
-            Positioned(
-              right: 20,
-              top: 20,
-              child: Padding(
-                padding: EdgeInsets.only(
-                  top: MediaQuery.of(context).padding.top,
-                ),
-                child: FloatingActionButton(
-                  heroTag: "close",
-                  backgroundColor: Colors.white.withOpacity(0.5),
-                  elevation: 0,
-                  onPressed: () => Navigator.of(context).pop(),
-                  hoverColor: Colors.transparent,
-                  splashColor: Colors.transparent,
-                  child: const Icon(
-                    Icons.close,
-                    color: Colors.black,
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
+    return const Icon(
+      Icons.file_copy,
+      color: Color(0xFF4069FF),
     );
   }
 }

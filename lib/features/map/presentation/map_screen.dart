@@ -13,7 +13,6 @@ import 'package:mapbox_gl/mapbox_gl.dart';
 
 // Project imports:
 import 'package:drop_go_smartphone/features/map/model/item_model.dart';
-import 'package:drop_go_smartphone/features/map/presentation/notification_screen.dart';
 import 'package:drop_go_smartphone/features/providers.dart';
 import 'package:drop_go_smartphone/features/saved_file/presentation/savefile_list_screen.dart';
 import 'package:drop_go_smartphone/main.dart';
@@ -64,41 +63,41 @@ class MapScreen extends StatelessWidget {
                 ),
               ),
             ),
+            // Positioned(
+            //   right: 20,
+            //   top: 20,
+            //   child: Padding(
+            //     padding: EdgeInsets.only(
+            //       top: MediaQuery.of(context).padding.top,
+            //     ),
+            //     child: OpenContainer(
+            //       closedShape: RoundedRectangleBorder(
+            //         borderRadius: BorderRadius.circular(100),
+            //       ),
+            //       closedElevation: 0,
+            //       transitionType: ContainerTransitionType.fadeThrough,
+            //       transitionDuration: const Duration(milliseconds: 500),
+            //       closedBuilder: (context, action) {
+            //         return FloatingActionButton(
+            //           heroTag: "notification",
+            //           backgroundColor: Colors.white,
+            //           elevation: 0,
+            //           onPressed: action,
+            //           child: const Icon(
+            //             Icons.notifications,
+            //             color: Colors.black,
+            //           ),
+            //         );
+            //       },
+            //       openBuilder: (context, action) {
+            //         return const NotificationScreen();
+            //       },
+            //     ),
+            //   ),
+            // ),
             Positioned(
               right: 20,
-              top: 20,
-              child: Padding(
-                padding: EdgeInsets.only(
-                  top: MediaQuery.of(context).padding.top,
-                ),
-                child: OpenContainer(
-                  closedShape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(100),
-                  ),
-                  closedElevation: 0,
-                  transitionType: ContainerTransitionType.fadeThrough,
-                  transitionDuration: const Duration(milliseconds: 500),
-                  closedBuilder: (context, action) {
-                    return FloatingActionButton(
-                      heroTag: "notification",
-                      backgroundColor: Colors.white,
-                      elevation: 0,
-                      onPressed: action,
-                      child: const Icon(
-                        Icons.notifications,
-                        color: Colors.black,
-                      ),
-                    );
-                  },
-                  openBuilder: (context, action) {
-                    return const NotificationScreen();
-                  },
-                ),
-              ),
-            ),
-            Positioned(
-              right: 20,
-              top: 90,
+              top: 20, //90
               child: Padding(
                 padding: EdgeInsets.only(
                   top: MediaQuery.of(context).padding.top,
@@ -182,6 +181,8 @@ class MapViewPart extends ConsumerWidget {
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           return MapboxMap(
+            accessToken:
+                'pk.eyJ1IjoiZ3VjY2hhbjI4IiwiYSI6ImNsY2dzOTg0ZzIzbTUzcHA0djFwOHdqZ20ifQ._R8wVzCv8ofFsin55Ex3BA',
             styleString: 'mapbox://styles/gucchan28/clccy8m7q007314l3zqcoftdb',
             initialCameraPosition: CameraPosition(
               target: LatLng(snapshot.data!.latitude, snapshot.data!.longitude),

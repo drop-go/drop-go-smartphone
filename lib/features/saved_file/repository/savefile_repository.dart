@@ -24,14 +24,23 @@ class SavefileRepositoryImpl implements SavefileRepository {
     final dir = Directory(path);
     final files = dir.listSync();
     for (var file in files) {
+      var url = '';
       final contentType = lookupMimeType(file.path) ?? '';
       final stat = await file.stat();
+
       if (stat.type == FileSystemEntityType.directory) {
         continue;
       }
       if (p.extension(file.path).split('.').length != 2) {
         continue;
       }
+
+      if (p.extension(file.path).split('.')[1] == 'link') {
+        final importFile = File(file.path);
+        final ras = await importFile.readAsString();
+        url = ras.trim();
+      }
+
       final map = {
         'name': p.basenameWithoutExtension(file.path),
         'extension': p.extension(file.path).split('.')[1],
@@ -39,6 +48,7 @@ class SavefileRepositoryImpl implements SavefileRepository {
         'date': stat.modified,
         'contentType': contentType.split('/')[0],
         'path': file.path,
+        'url': url,
       };
       fileMapList.add(map);
     }

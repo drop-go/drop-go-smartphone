@@ -36,4 +36,8 @@ class SavefileViewModel extends StateNotifier<SavefileState> {
     }
     state = state.copyWith(isLoading: false);
   }
+
+  String getUrl(String path) {
+    return '';
+  }
 }
