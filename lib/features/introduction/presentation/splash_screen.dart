@@ -10,6 +10,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:drop_go_smartphone/constants/constants.dart' as constants;
 import 'package:drop_go_smartphone/features/event/presentation/home_screen.dart';
 import 'package:drop_go_smartphone/features/introduction/presentation/info_screen.dart';
+import 'package:drop_go_smartphone/features/map/presentation/map_screen.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);
@@ -30,11 +31,21 @@ class _SplashScreenState extends State<SplashScreen> {
         Navigator.of(context).push(
           InfoScreen.route(),
         );
+        return;
+      }
+
+      final eventId = prefs.getString('selectedEventId') ?? '';
+      if (eventId == '') {
+        if (!mounted) return;
+        Navigator.of(context).push(
+          HomeScreen.route(),
+        );
+        return;
       }
 
       if (!mounted) return;
       Navigator.of(context).push(
-        HomeScreen.route(),
+        MapScreen.route(eventId),
       );
     });
     super.initState();

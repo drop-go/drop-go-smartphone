@@ -10,8 +10,10 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mapbox_gl/mapbox_gl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 // Project imports:
+import 'package:drop_go_smartphone/features/event/presentation/home_screen.dart';
 import 'package:drop_go_smartphone/features/map/model/item_model.dart';
 import 'package:drop_go_smartphone/features/providers.dart';
 import 'package:drop_go_smartphone/features/saved_file/presentation/savefile_list_screen.dart';
@@ -53,8 +55,14 @@ class MapScreen extends StatelessWidget {
                   heroTag: "back",
                   backgroundColor: Colors.white,
                   elevation: 0,
-                  onPressed: () => {
-                    Navigator.of(context).pop(),
+                  onPressed: () async {
+                    final prefs = await SharedPreferences.getInstance();
+                    await prefs.setString('selectedEventId', '');
+                    Navigator.pushAndRemoveUntil<void>(
+                      navigatorKey.currentContext!,
+                      HomeScreen.route(),
+                      (_) => false,
+                    );
                   },
                   child: const Icon(
                     Icons.arrow_back,

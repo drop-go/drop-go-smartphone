@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 // Project imports:
 import 'package:drop_go_smartphone/common_widgets/common_loading.dart';
@@ -10,6 +11,7 @@ import 'package:drop_go_smartphone/constants/constants.dart' as constants;
 import 'package:drop_go_smartphone/features/event/model/event_model.dart';
 import 'package:drop_go_smartphone/features/map/presentation/map_screen.dart';
 import 'package:drop_go_smartphone/features/providers.dart';
+import 'package:drop_go_smartphone/main.dart';
 import 'package:drop_go_smartphone/utils/unix_time_formatter.dart';
 
 class HomeScreen extends ConsumerWidget {
@@ -88,10 +90,13 @@ class EventPanel extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(16),
       child: InkWell(
-        onTap: () => {
-          Navigator.of(context).push(
+        onTap: () async {
+          final pref = await SharedPreferences.getInstance();
+          await pref.setString('selectedEventId', eventList[index].id);
+
+          Navigator.of(navigatorKey.currentContext!).push(
             MapScreen.route(eventList[index].id),
-          ),
+          );
         },
         child: Container(
           decoration: BoxDecoration(
