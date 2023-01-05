@@ -4,9 +4,11 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 // Project imports:
 import 'package:drop_go_smartphone/constants/constants.dart' as constants;
+import 'package:drop_go_smartphone/features/event/presentation/home_screen.dart';
 import 'package:drop_go_smartphone/features/introduction/presentation/info_screen.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -19,11 +21,21 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
-    Future.delayed(const Duration(seconds: 3), () {
+    Future.delayed(const Duration(seconds: 3), () async {
+      final prefs = await SharedPreferences.getInstance();
+      if (prefs.getBool('hasLaunchedInitial') == null) {
+        await prefs.setBool('hasLaunchedInitial', true);
+
+        if (!mounted) return;
+        Navigator.of(context).push(
+          InfoScreen.route(),
+        );
+      }
+
+      if (!mounted) return;
       Navigator.of(context).push(
-        InfoScreen.route(),
+        HomeScreen.route(),
       );
-      // ref.read(routerProvider).push('/info');
     });
     super.initState();
   }
