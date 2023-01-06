@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:animations/animations.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 // Project imports:
 import 'package:drop_go_smartphone/common_widgets/common_loading.dart';
@@ -13,7 +14,6 @@ import 'package:drop_go_smartphone/features/providers.dart';
 import 'package:drop_go_smartphone/features/saved_file/presentation/preview_screen/image_preview.dart';
 import 'package:drop_go_smartphone/features/saved_file/presentation/preview_screen/other_preview.dart';
 import 'package:drop_go_smartphone/features/saved_file/presentation/preview_screen/video_preview.dart';
-import 'package:drop_go_smartphone/features/saved_file/presentation/preview_screen/webview_preview.dart';
 import 'package:drop_go_smartphone/utils/date_to_string.dart';
 
 class SavefileListScreen extends ConsumerWidget {
@@ -70,6 +70,61 @@ class FilePanel extends StatelessWidget {
       itemCount: fileList.length,
       itemBuilder: (context, index) {
         final file = fileList[index];
+        if (file['extension'].toString() == 'link') {
+          final url = Uri.parse(file['url'].toString());
+          return InkWell(
+            onTap: () {
+              showDialog(
+                context: context,
+                barrierDismissible: false,
+                builder: (context) => AlertDialog(
+                  title: const Text('注意'),
+                  content: const Text('外部ブラウザが起動します'),
+                  actionsAlignment: MainAxisAlignment.spaceBetween,
+                  actions: [
+                    Padding(
+                      padding: const EdgeInsets.only(left: 10),
+                      child: TextButton(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                        child: const Text(
+                          'キャンセル',
+                          style: TextStyle(
+                            color: Colors.grey,
+                          ),
+                        ),
+                      ),
+                    ),
+                    ElevatedButton(
+                      onPressed: () async => await launchUrl(
+                        url,
+                        mode: LaunchMode.externalApplication,
+                      ),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFF4069FF),
+                      ),
+                      child: const Text('OK'),
+                    ),
+                  ],
+                ),
+              );
+            },
+            child: Container(
+              color: Theme.of(context).scaffoldBackgroundColor,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Row(
+                  children: [
+                    _ifIcon(file),
+                    const SizedBox(width: 16),
+                    _saveFilePart(file),
+                  ],
+                ),
+              ),
+            ),
+          );
+        }
         return OpenContainer(
           closedElevation: 0,
           transitionType: ContainerTransitionType.fadeThrough,
@@ -96,23 +151,12 @@ class FilePanel extends StatelessWidget {
               case 'video':
                 return VideoPreview(file: file);
               default:
-                if (file['extension'].toString() == 'link') {
-                  return WebviewPreview(
-                    url: file['url'].toString(),
-                    title: file['name'].toString(),
-                  );
-                } else {
-                  return const OtherPreview();
-                }
+                return const OtherPreview();
             }
           },
         );
       },
     );
-  }
-
-  Future<String> _getUrl(String path) async {
-    return '';
   }
 
   Widget _saveFilePart(Map<String, Object> file) {
@@ -183,7 +227,7 @@ class FilePanel extends StatelessWidget {
     } else {
       if (file['extension'].toString() == 'link') {
         return const Icon(
-          Icons.link,
+          Icons.travel_explore,
           color: Color(0xFF4069FF),
         );
       }

@@ -232,6 +232,7 @@ class MapViewPart extends ConsumerWidget {
   }
 
   void _onSymbolTap(Symbol symbol, WidgetRef ref) async {
+    final context = navigatorKey.currentContext!;
     final tappedSymbolItem = symbolMap[symbol.id]!;
     void Function()? onPressed = () async {
       EasyLoading.show(

@@ -2,16 +2,8 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-    <key>NSLocationWhenInUseUsageDescription</key>
-    <string>Your location is required for this app</string>
-	<key>MAP_API_KEY</key>
-	<string>$(MAP_API_KEY)</string>
-  <key>MGLMapboxAccessToken</key>
-  <string>pk.eyJ1IjoiZ3VjY2hhbjI4IiwiYSI6ImNsY2N4a2wxczRjcjkzb21uazJjOTlhNjIifQ.Jgb65XrpokHionJ7Y6nVow</string>
-  <key>NSBonjourServices</key>
-  <array>
-    <string>_dartobservatory._tcp.</string>
-  </array>
+	<key>CADisableMinimumFrameDurationOnPhone</key>
+	<true/>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
@@ -34,6 +26,18 @@
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>MAP_API_KEY</key>
+	<string>$(MAP_API_KEY)</string>
+	<key>MGLMapboxAccessToken</key>
+	<string>pk.eyJ1IjoiZ3VjY2hhbjI4IiwiYSI6ImNsY2N4a2wxczRjcjkzb21uazJjOTlhNjIifQ.Jgb65XrpokHionJ7Y6nVow</string>
+	<key>NSBonjourServices</key>
+	<array>
+		<string>_dartobservatory._tcp.</string>
+	</array>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Your location is required for this app</string>
+	<key>UIApplicationSupportsIndirectInputEvents</key>
+	<true/>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>
@@ -53,9 +57,5 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
-	<key>CADisableMinimumFrameDurationOnPhone</key>
-	<true/>
-	<key>UIApplicationSupportsIndirectInputEvents</key>
-	<true/>
 </dict>
 </plist>
