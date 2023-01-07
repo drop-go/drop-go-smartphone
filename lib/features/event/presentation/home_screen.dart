@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:animations/animations.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -11,6 +12,7 @@ import 'package:drop_go_smartphone/constants/constants.dart' as constants;
 import 'package:drop_go_smartphone/features/event/model/event_model.dart';
 import 'package:drop_go_smartphone/features/map/presentation/map_screen.dart';
 import 'package:drop_go_smartphone/features/providers.dart';
+import 'package:drop_go_smartphone/features/saved_file/presentation/savefile_list_screen.dart';
 import 'package:drop_go_smartphone/main.dart';
 import 'package:drop_go_smartphone/utils/unix_time_formatter.dart';
 
@@ -29,6 +31,25 @@ class HomeScreen extends ConsumerWidget {
     return WillPopScope(
       onWillPop: () async => false,
       child: Scaffold(
+        floatingActionButton: OpenContainer(
+          closedShape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(100),
+          ),
+          closedElevation: 0,
+          transitionType: ContainerTransitionType.fadeThrough,
+          transitionDuration: const Duration(milliseconds: 500),
+          closedBuilder: (context, action) {
+            return FloatingActionButton.extended(
+              backgroundColor: const Color(0xFF4069FF),
+              onPressed: action,
+              icon: const Icon(Icons.file_copy),
+              label: const Text('保存したアイテム'),
+            );
+          },
+          openBuilder: (context, action) {
+            return const SavefileListScreen();
+          },
+        ),
         body: SafeArea(
           bottom: false,
           child: Center(

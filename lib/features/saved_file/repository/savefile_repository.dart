@@ -7,6 +7,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mime/mime.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 final savefileRepositoryProvider =
     Provider.autoDispose<SavefileRepository>((ref) => SavefileRepositoryImpl());
@@ -41,8 +42,11 @@ class SavefileRepositoryImpl implements SavefileRepository {
         url = ras.trim();
       }
 
+      final prefs = await SharedPreferences.getInstance();
+      final fileName = p.basenameWithoutExtension(file.path);
       final map = {
-        'name': p.basenameWithoutExtension(file.path),
+        'title': prefs.getString(fileName) ?? '',
+        'name': fileName,
         'extension': p.extension(file.path).split('.')[1],
         'fileSize': _convertSizeText(stat.size),
         'date': stat.modified,

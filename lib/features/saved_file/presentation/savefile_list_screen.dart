@@ -39,7 +39,7 @@ class SavefileListScreen extends ConsumerWidget {
           onPressed: () => Navigator.of(context).pop(),
         ),
         title: const Text(
-          "ファイル一覧",
+          "アイテム一覧",
           style: TextStyle(
             color: Colors.black,
           ),
@@ -178,7 +178,7 @@ class FilePanel extends StatelessWidget {
                 children: [
                   Flexible(
                     child: Text(
-                      file['name'].toString(),
+                      file['title'].toString(),
                       textAlign: TextAlign.left,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,

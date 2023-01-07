@@ -8,9 +8,9 @@ import 'dart:typed_data';
 import 'package:geolocator/geolocator.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 // Project imports:
-import 'package:drop_go_smartphone/features/map/model/file/file_model.dart';
 import 'package:drop_go_smartphone/features/map/model/item_model.dart';
 import 'package:drop_go_smartphone/features/map/repository/item_repository.dart';
 import 'package:drop_go_smartphone/features/map/repository/position_repository.dart';
@@ -59,11 +59,15 @@ class MapViewModel extends StateNotifier<MapState> {
 
   Future<void> downloadItem(String eventId, String itemId) async {
     final itemRepository = read(itemRepositoryProvider);
-    final FileModel file = await itemRepository.fetchFile(eventId, itemId);
-    final Uint8List bytes = base64Decode(file.dataURI.split(',')[1]);
+    final ItemModel file = await itemRepository.fetchFile(eventId, itemId);
+    final Uint8List bytes = base64Decode(file.file.dataURI.split(',')[1]);
     final String dir = (await getApplicationDocumentsDirectory()).path;
-    final File saveFile = File("$dir/${file.fileName}.${file.extension}");
+    final File saveFile =
+        File("$dir/${file.file.fileName}.${file.file.extension}");
     await saveFile.writeAsBytes(bytes);
+
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(file.file.fileName, file.title);
   }
 
   Future<void> _getCurrentLocation() async {
