@@ -43,7 +43,7 @@ dartEnvironmentVariables =
 // ----------------------- Add end ------------------------//
 
 android {
-    compileSdkVersion flutter.compileSdkVersion
+    compileSdkVersion 32
     ndkVersion flutter.ndkVersion
 
     compileOptions {
