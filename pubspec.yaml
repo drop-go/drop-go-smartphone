@@ -62,6 +62,7 @@ dependencies:
   top_snackbar_flutter: ^3.0.0+1
   url_launcher: ^6.1.7
   panara_dialogs: ^0.1.4
+  flutter_launcher_icons: ^0.11.0
 
 dev_dependencies:
   flutter_test:
@@ -117,3 +118,8 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
+
+flutter_icons:
+  android: true 
+  ios: true
+  image_path: "assets/image/icon.jpg"

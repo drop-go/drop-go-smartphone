@@ -37,7 +37,28 @@ class SavefileViewModel extends StateNotifier<SavefileState> {
     state = state.copyWith(isLoading: false);
   }
 
-  String getUrl(String path) {
-    return '';
+  Future<void> deleteFile(String path) async {
+    final saveFileRepository = read(savefileRepositoryProvider);
+    try {
+      if (!mounted) {
+        return;
+      }
+      state = state.copyWith(isLoading: true);
+      final savefileList = await saveFileRepository.deleteFile(path);
+
+      if (!mounted) {
+        return;
+      }
+      state = state.copyWith(fileList: savefileList);
+    } on Exception catch (e) {
+      if (!mounted) {
+        return;
+      }
+      state = state.copyWith(errorMessage: e.toString());
+    }
+    if (!mounted) {
+      return;
+    }
+    state = state.copyWith(isLoading: false);
   }
 }

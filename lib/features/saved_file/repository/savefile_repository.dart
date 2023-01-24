@@ -14,6 +14,7 @@ final savefileRepositoryProvider =
 
 abstract class SavefileRepository {
   Future<List<Map<String, Object>>> fetchFiles();
+  Future<List<Map<String, Object>>> deleteFile(String path);
 }
 
 class SavefileRepositoryImpl implements SavefileRepository {
@@ -74,5 +75,12 @@ class SavefileRepositoryImpl implements SavefileRepository {
       sizeText = '$byte B';
     }
     return sizeText;
+  }
+
+  @override
+  Future<List<Map<String, Object>>> deleteFile(String path) async {
+    final file = File(path);
+    await file.delete();
+    return await fetchFiles();
   }
 }

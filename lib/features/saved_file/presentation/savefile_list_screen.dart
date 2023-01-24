@@ -73,6 +73,12 @@ class FilePanel extends StatelessWidget {
         if (file['extension'].toString() == 'link') {
           final url = Uri.parse(file['url'].toString());
           return InkWell(
+            onLongPress: () => showDialog(
+              context: context,
+              builder: (context) => DeleteDialog(
+                path: file['path'].toString(),
+              ),
+            ),
             onTap: () {
               showDialog(
                 context: context,
@@ -125,35 +131,45 @@ class FilePanel extends StatelessWidget {
             ),
           );
         }
-        return OpenContainer(
-          closedElevation: 0,
-          transitionType: ContainerTransitionType.fadeThrough,
-          transitionDuration: const Duration(milliseconds: 500),
-          closedBuilder: (context, action) {
-            return Container(
-              color: Theme.of(context).scaffoldBackgroundColor,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: Row(
-                  children: [
-                    _ifIcon(file),
-                    const SizedBox(width: 16),
-                    _saveFilePart(file),
-                  ],
+        return InkWell(
+          onLongPress: () => showDialog(
+            context: context,
+            builder: (context) => DeleteDialog(
+              path: file['path'].toString(),
+            ),
+          ),
+          child: OpenContainer(
+            closedElevation: 0,
+            transitionType: ContainerTransitionType.fadeThrough,
+            transitionDuration: const Duration(milliseconds: 500),
+            closedBuilder: (context, action) {
+              return InkWell(
+                child: Container(
+                  color: Theme.of(context).scaffoldBackgroundColor,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: Row(
+                      children: [
+                        _ifIcon(file),
+                        const SizedBox(width: 16),
+                        _saveFilePart(file),
+                      ],
+                    ),
+                  ),
                 ),
-              ),
-            );
-          },
-          openBuilder: (context, action) {
-            switch (file['contentType'].toString()) {
-              case 'image':
-                return ImagePreview(file: file);
-              case 'video':
-                return VideoPreview(file: file);
-              default:
-                return const OtherPreview();
-            }
-          },
+              );
+            },
+            openBuilder: (context, action) {
+              switch (file['contentType'].toString()) {
+                case 'image':
+                  return ImagePreview(file: file);
+                case 'video':
+                  return VideoPreview(file: file);
+                default:
+                  return const OtherPreview();
+              }
+            },
+          ),
         );
       },
     );
@@ -236,6 +252,55 @@ class FilePanel extends StatelessWidget {
     return const Icon(
       Icons.file_copy,
       color: Color(0xFF4069FF),
+    );
+  }
+}
+
+class DeleteDialog extends ConsumerWidget {
+  const DeleteDialog({super.key, required this.path});
+
+  final String path;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return AlertDialog(
+      title: const Text(
+        '注意',
+        style: TextStyle(
+          color: Colors.red,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+      content: const Text('ファイルを削除しますか？'),
+      actionsAlignment: MainAxisAlignment.spaceBetween,
+      actions: [
+        Padding(
+          padding: const EdgeInsets.only(left: 10),
+          child: TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            child: const Text(
+              'キャンセル',
+              style: TextStyle(
+                color: Colors.grey,
+              ),
+            ),
+          ),
+        ),
+        TextButton(
+          onPressed: () async {
+            final savefileViewModel =
+                ref.read(savefileViewModelProvider.notifier);
+            await savefileViewModel.deleteFile(path);
+            Navigator.of(context).pop();
+          },
+          child: const Text(
+            '削除',
+            style: TextStyle(color: Colors.red),
+          ),
+        ),
+      ],
     );
   }
 }
