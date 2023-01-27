@@ -8,7 +8,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 // Project imports:
 import 'package:drop_go_smartphone/common_widgets/common_loading.dart';
-import 'package:drop_go_smartphone/constants/constants.dart' as constants;
 import 'package:drop_go_smartphone/features/event/model/event_model.dart';
 import 'package:drop_go_smartphone/features/map/presentation/map_screen.dart';
 import 'package:drop_go_smartphone/features/providers.dart';
@@ -57,28 +56,198 @@ class HomeScreen extends ConsumerWidget {
               children: [
                 Column(
                   children: [
-                    const Padding(
-                      padding: EdgeInsets.symmetric(vertical: 12),
-                      child: Text(
-                        constants.eventInfo,
-                        style: TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
-                        ),
+                    Container(
+                      margin: const EdgeInsets.only(left: 16),
+                      child: Row(
+                        children: [
+                          Container(
+                            height: 1,
+                            width: 15,
+                            color: Colors.black,
+                          ),
+                          const SizedBox(width: 7),
+                          const Text(
+                            'おすすめのイベント',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(
+                      height: 247,
+                      child: ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          itemCount: state.eventList.length,
+                          itemBuilder: (context, index) {
+                            if (index < 3) {
+                              return EventPanelHoriz(
+                                num: index,
+                                list: state.eventList,
+                              );
+                            } else {
+                              return Container();
+                            }
+                          }),
+                    ),
+                    Container(
+                      margin: const EdgeInsets.only(left: 16),
+                      child: Row(
+                        children: [
+                          Container(
+                            height: 1,
+                            width: 15,
+                            color: Colors.black,
+                          ),
+                          const SizedBox(width: 7),
+                          Container(
+                            margin: const EdgeInsets.symmetric(vertical: 6),
+                            child: const Text(
+                              'すべてのイベント',
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                     Expanded(
                       child: ListView.builder(
                         itemCount: state.eventList.length,
-                        itemBuilder: (context, index) => EventPanel(
-                          num: index,
-                          list: state.eventList,
-                        ),
+                        itemBuilder: (context, index) {
+                          if (index == 0 || index == 1 || index == 2) {
+                            return Container();
+                          } else {
+                            return EventPanel(
+                              num: index,
+                              list: state.eventList,
+                            );
+                          }
+                        },
                       ),
                     )
                   ],
                 ),
                 CommonLoading(visible: state.isLoading),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class EventPanelHoriz extends StatelessWidget {
+  const EventPanelHoriz(
+      {super.key, required int num, required List<EventModel> list})
+      : eventList = list,
+        index = num;
+
+  final int index;
+  final List<EventModel> eventList;
+
+  @override
+  Widget build(BuildContext context) {
+    final startDate = unixToDate(eventList[index].startDate);
+    final endDate = unixToDate(eventList[index].endDate);
+
+    var imageUrl = eventList[index].imageUrl;
+    if (imageUrl == '') {
+      imageUrl =
+          'https://thumb.ac-illust.com/53/53a1735dbeb06d68b83eb2ca7ee30642_t.jpeg';
+    }
+
+    return Container(
+      width: MediaQuery.of(context).size.width * 0.65,
+      margin: const EdgeInsets.symmetric(
+        vertical: 4,
+        horizontal: 12,
+      ),
+      child: Card(
+        clipBehavior: Clip.antiAlias,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(
+            top: Radius.circular(20),
+          ),
+        ),
+        child: Material(
+          color: Colors.white,
+          child: InkWell(
+            onTap: () async {
+              final pref = await SharedPreferences.getInstance();
+              await pref.setString('selectedEventId', eventList[index].id);
+
+              Navigator.of(navigatorKey.currentContext!).push(
+                MapScreen.route(eventList[index].id),
+              );
+            },
+            child: Column(
+              children: [
+                SizedBox(
+                  width: double.infinity,
+                  height: 80,
+                  child: ClipRRect(
+                    borderRadius: const BorderRadius.vertical(
+                      top: Radius.circular(20),
+                    ),
+                    child: Image.network(
+                      imageUrl,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(10),
+                  child: Column(
+                    children: [
+                      SizedBox(
+                        width: double.infinity,
+                        child: Text(
+                          eventList[index].address,
+                          textAlign: TextAlign.left,
+                          style: const TextStyle(
+                            fontSize: 12,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 4),
+                        child: Text(
+                          eventList[index].title,
+                          style: const TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(
+                          bottom: 6,
+                        ),
+                        child: Text(
+                          eventList[index].description,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                      SizedBox(
+                        width: double.infinity,
+                        child: Text(
+                          '$startDate ~ $endDate',
+                          textAlign: TextAlign.right,
+                          style: const TextStyle(fontSize: 10),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               ],
             ),
           ),
@@ -108,89 +277,89 @@ class EventPanel extends StatelessWidget {
           'https://thumb.ac-illust.com/53/53a1735dbeb06d68b83eb2ca7ee30642_t.jpeg';
     }
 
-    return Padding(
-      padding: const EdgeInsets.all(16),
-      child: InkWell(
-        onTap: () async {
-          final pref = await SharedPreferences.getInstance();
-          await pref.setString('selectedEventId', eventList[index].id);
-
-          Navigator.of(navigatorKey.currentContext!).push(
-            MapScreen.route(eventList[index].id),
-          );
-        },
-        child: Container(
-          decoration: BoxDecoration(
-            color: Theme.of(context).scaffoldBackgroundColor,
-            border: Border.all(color: Colors.black),
-            borderRadius: BorderRadius.circular(20),
-            boxShadow: const [
-              BoxShadow(
-                color: Colors.grey,
-                spreadRadius: 2,
-                blurRadius: 5,
-                offset: Offset(1, 1),
-              ),
-            ],
+    return Container(
+      width: MediaQuery.of(context).size.width * 0.65,
+      margin: const EdgeInsets.symmetric(
+        vertical: 4,
+        horizontal: 12,
+      ),
+      child: Card(
+        clipBehavior: Clip.antiAlias,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(
+            top: Radius.circular(20),
           ),
-          child: Column(
-            children: [
-              SizedBox(
-                width: double.infinity,
-                height: 135,
-                child: ClipRRect(
-                  borderRadius: const BorderRadius.vertical(
-                    top: Radius.circular(20),
-                  ),
-                  child: Image.network(
-                    imageUrl,
-                    fit: BoxFit.cover,
+        ),
+        child: Material(
+          color: Colors.white,
+          child: InkWell(
+            onTap: () async {
+              final pref = await SharedPreferences.getInstance();
+              await pref.setString('selectedEventId', eventList[index].id);
+
+              Navigator.of(navigatorKey.currentContext!).push(
+                MapScreen.route(eventList[index].id),
+              );
+            },
+            child: Column(
+              children: [
+                SizedBox(
+                  width: double.infinity,
+                  height: 135,
+                  child: ClipRRect(
+                    borderRadius: const BorderRadius.vertical(
+                      top: Radius.circular(20),
+                    ),
+                    child: Image.network(
+                      imageUrl,
+                      fit: BoxFit.cover,
+                    ),
                   ),
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(10),
-                child: Column(
-                  children: [
-                    SizedBox(
-                      width: double.infinity,
-                      child: Text(
-                        eventList[index].address,
-                        textAlign: TextAlign.left,
-                        style: const TextStyle(
-                          fontSize: 18,
+                Padding(
+                  padding: const EdgeInsets.all(10),
+                  child: Column(
+                    children: [
+                      SizedBox(
+                        width: double.infinity,
+                        child: Text(
+                          eventList[index].address,
+                          textAlign: TextAlign.left,
+                          style: const TextStyle(
+                            fontSize: 18,
+                          ),
                         ),
                       ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 8),
-                      child: Text(
-                        eventList[index].title,
-                        style: const TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 4),
+                        child: Text(
+                          eventList[index].title,
+                          style: const TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(
-                        bottom: 12,
+                      Padding(
+                        padding: const EdgeInsets.only(
+                          bottom: 12,
+                        ),
+                        child: Text(
+                          eventList[index].description,
+                        ),
                       ),
-                      child: Text(
-                        eventList[index].description,
+                      SizedBox(
+                        width: double.infinity,
+                        child: Text(
+                          '$startDate ~ $endDate',
+                          textAlign: TextAlign.right,
+                        ),
                       ),
-                    ),
-                    SizedBox(
-                      width: double.infinity,
-                      child: Text(
-                        '$startDate ~ $endDate',
-                        textAlign: TextAlign.right,
-                      ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

@@ -14,4 +14,4 @@ const String overviewMsg = 'GPSを活用し、お得な情報を';
 const String getText = '  GET!';
 
 // home_screen
-const String eventInfo = 'おすすめのイベント情報';
+const String eventInfo = 'イベント情報';
